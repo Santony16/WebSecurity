@@ -3,10 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-
+const protectedRoutes = require('./middlewares/protected.routes');
 const authRoutes = require('./routes/auth.routes');
 
 const app = express();
+
 
 app.use(helmet());
 
@@ -26,5 +27,6 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/protected', protectedRoutes);
 
 module.exports = app;

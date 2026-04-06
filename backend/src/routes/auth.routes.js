@@ -5,9 +5,11 @@ const {
   loginController,
   logoutController
 } = require('../controllers/auth.controller');
+const { validateOrigin } = require('../middlewares/origin.middleware');
+const { loginRateLimiter } = require('../middlewares/timeLimit.middleware');
 
 router.post('/seed-superadmin', seedSuperAdmin);
-router.post('/login', loginController);
-router.post('/logout', logoutController);
+router.post('/login', validateOrigin, loginRateLimiter,loginController);
+router.post('/logout', validateOrigin,logoutController);
 
 module.exports = router;

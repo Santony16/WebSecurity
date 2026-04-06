@@ -44,9 +44,20 @@ const login = async ({ identifier, password, req }) => {
     throw new Error('Usuario inactivo');
   }
 
-  if (user.locked_until && new Date(user.locked_until) > new Date()) {
-    throw new Error('Usuario bloqueado temporalmente');
-  }
+if (user.locked_until && new Date(user.locked_until) > new Date()) {
+  await registerAuditEvent({
+    userId: user.id,
+    eventType: 'RATE_LIMIT_TRIGGERED',
+    route: req.originalUrl,
+    method: req.method,
+    ipAddress: req.ip,
+    userAgent: req.get('user-agent'),
+    statusCode: 429,
+    details: { reason: 'user_locked', locked_until: user.locked_until }
+  });
+
+  throw new Error('Usuario bloqueado temporalmente por múltiples intentos fallidos');
+}
 
   const passwordMatches = await bcrypt.compare(password, user.password_hash);
 

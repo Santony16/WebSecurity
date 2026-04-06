@@ -80,6 +80,12 @@ const loginController = async (req, res) => {
 
     res.cookie('token', result.token, buildAuthCookieOptions());
 
+    res.cookie('lastActivity', Date.now().toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
     return res.status(200).json({
       message: 'Login exitoso',
       user: result.user
@@ -93,6 +99,8 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   res.clearCookie('token');
+  res.clearCookie('lastActivity');
+
   return res.status(200).json({
     message: 'Sesión cerrada'
   });
