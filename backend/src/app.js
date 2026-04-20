@@ -7,6 +7,7 @@ const protectedRoutes = require('./middlewares/protected.routes');
 const authRoutes = require('./routes/auth.routes');
 const productsRoutes = require('./routes/products.routes');
 const usersRoutes = require('./routes/users.routes');
+const rolesRoutes = require('./routes/roles.routes');
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/protected', protectedRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/roles', rolesRoutes);
 
 module.exports = app;
