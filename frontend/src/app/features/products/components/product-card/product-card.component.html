@@ -1,7 +1,41 @@
-<article class="card">
-  <h3>{{ product.name }}</h3>
-  <p>{{ product.description }}</p>
-  <p><strong>Codigo:</strong> {{ product.code }}</p>
-  <p><strong>Categoria:</strong> {{ product.category }}</p>
-  <p><strong>Precio:</strong> ${{ product.price }}</p>
+<article class="product-card" [class.product-card--inactive]="!product.is_active">
+  <div class="product-card__top">
+    <div class="product-card__fallback">
+      {{ product.name.charAt(0) }}
+    </div>
+
+    <span class="status-chip" [class.status-chip--inactive]="!product.is_active">
+      {{ product.is_active ? 'Activo' : 'Inactivo' }}
+    </span>
+  </div>
+
+  <div class="product-card__body">
+    <div class="product-card__header">
+      <p class="product-card__code">{{ product.code }}</p>
+      <h3>{{ product.name }}</h3>
+    </div>
+
+    <p class="product-card__description">{{ product.description }}</p>
+
+    <div class="product-card__meta">
+      <span>{{ product.category }}</span>
+      <span>{{ product.quantity }} unidades</span>
+    </div>
+
+    <div class="product-card__footer">
+      <div>
+        <span>Precio</span>
+        <strong>${{ product.price | number:'1.0-2' }}</strong>
+      </div>
+      <div>
+        <span>Creado</span>
+        <strong>{{ product.created_at | date:'dd/MM/yyyy' }}</strong>
+      </div>
+    </div>
+
+    <div class="product-card__actions" *ngIf="canManage">
+      <button type="button" class="secondary" (click)="onEdit()">Editar</button>
+      <button type="button" class="danger" (click)="onDelete()">Eliminar</button>
+    </div>
+  </div>
 </article>

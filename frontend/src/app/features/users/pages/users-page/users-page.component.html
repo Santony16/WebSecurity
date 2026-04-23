@@ -1,0 +1,112 @@
+<section class="users-page">
+  <header class="page-hero">
+    <div class="page-hero__copy">
+      <h1>Usuarios</h1>
+    </div>
+
+    <div class="page-hero__stats">
+      <article>
+        <span>Total</span>
+        <strong>{{ users.length }}</strong>
+      </article>
+      <article>
+        <span>Activos</span>
+        <strong>{{ activeUsersCount }}</strong>
+      </article>
+      <article>
+        <span>Inactivos</span>
+        <strong>{{ inactiveUsersCount }}</strong>
+      </article>
+      <article>
+        <span>Con login registrado</span>
+        <strong>{{ recentLoginCount }}</strong>
+      </article>
+    </div>
+  </header>
+
+  <div class="state-card" *ngIf="loading">
+    <h2>Cargando usuarios</h2>
+    <p>Estamos consultando la informacion del backend.</p>
+  </div>
+
+  <section class="editor-panel" *ngIf="isSuperAdmin && !loading">
+    <div class="editor-panel__header">
+      <div>
+        <h2>{{ editingUserId ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+      </div>
+      <button type="button" class="ghost-button" (click)="startCreate()">Nuevo formulario</button>
+    </div>
+
+    <form class="editor-form" (ngSubmit)="saveUser()">
+      <label>
+        <span>Username</span>
+        <input name="username" [(ngModel)]="form.username" maxlength="80" autocomplete="off" required />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input name="email" type="email" [(ngModel)]="form.email" maxlength="254" autocomplete="off" required />
+      </label>
+
+      <label>
+        <span>{{ editingUserId ? 'Nueva contrasena opcional' : 'Contrasena' }}</span>
+        <input name="password" type="password" [(ngModel)]="form.password" maxlength="128" autocomplete="new-password" [required]="editingUserId === null" />
+      </label>
+
+      <label>
+        <span>Rol</span>
+        <select name="roleId" [(ngModel)]="form.roleId" required>
+          <option [ngValue]="null">Selecciona un rol</option>
+          <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.name }}</option>
+        </select>
+      </label>
+
+      <label class="toggle-field" *ngIf="editingUserId !== null">
+        <input name="isActive" type="checkbox" [(ngModel)]="form.isActive" />
+        <span>Usuario activo</span>
+      </label>
+
+      <div class="feedback-row">
+        <button type="submit" [disabled]="saving">
+          {{ saving ? 'Guardando...' : editingUserId ? 'Guardar cambios' : 'Crear usuario' }}
+        </button>
+        <p class="feedback success" *ngIf="successMessage">{{ successMessage }}</p>
+        <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </div>
+    </form>
+  </section>
+
+  <div class="state-card error" *ngIf="!loading && errorMessage && !isSuperAdmin">
+    <h2>No se pudo cargar la vista</h2>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <section class="users-grid" *ngIf="!loading && users.length > 0">
+    <article class="user-card" *ngFor="let user of users">
+      <div class="user-card__top">
+        <div>
+          <span class="role-chip">{{ user.role_name || ('Rol #' + user.role_id) }}</span>
+          <h3>{{ user.username }}</h3>
+          <p>{{ user.email }}</p>
+        </div>
+        <span class="status-chip" [class.inactive]="!user.is_active">
+          {{ user.is_active ? 'Activo' : 'Inactivo' }}
+        </span>
+      </div>
+
+      <div class="user-card__meta">
+        <span>Ultimo login: {{ user.last_login_at ? (user.last_login_at | date:'dd/MM/yyyy HH:mm') : 'Sin registro' }}</span>
+        <span>Creado: {{ user.created_at | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <div class="user-card__permissions">
+        <span *ngFor="let permission of user.permissions">{{ permission.code }}</span>
+      </div>
+
+      <div class="user-card__actions" *ngIf="isSuperAdmin">
+        <button type="button" class="secondary" (click)="startEdit(user)">Editar</button>
+        <button type="button" class="danger" (click)="deleteUser(user)">Desactivar</button>
+      </div>
+    </article>
+  </section>
+</section>

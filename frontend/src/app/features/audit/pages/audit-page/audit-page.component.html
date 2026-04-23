@@ -1,0 +1,107 @@
+<section class="audit-page">
+  <header class="page-hero">
+    <div class="page-hero__copy">
+      <h1>Registro de Actividad</h1>
+    </div>
+
+    <div class="page-hero__stats">
+      <article>
+        <span>Eventos visibles</span>
+        <strong>{{ logs.length }}</strong>
+      </article>
+      <article>
+        <span>Usuarios involucrados</span>
+        <strong>{{ uniqueUsersCount }}</strong>
+      </article>
+      <article>
+        <span>Estados >= 400</span>
+        <strong>{{ errorLogCount }}</strong>
+      </article>
+    </div>
+  </header>
+
+  <section class="filters-panel">
+    <div class="filters-panel__header">
+      <div>
+        <h2>Filtrar eventos</h2>
+      </div>
+      <button type="button" class="ghost-button" (click)="resetFilters()">Limpiar</button>
+    </div>
+
+    <form class="filters-form" (ngSubmit)="applyFilters()">
+      <label>
+        <span>Tipo de evento</span>
+        <select name="event_type" [(ngModel)]="filters.event_type">
+          <option value="">Todos</option>
+          <option *ngFor="let eventType of eventTypes" [value]="eventType">{{ eventType }}</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Usuario</span>
+        <select name="user_id" [(ngModel)]="filters.user_id">
+          <option [ngValue]="null">Todos</option>
+          <option *ngFor="let user of users" [ngValue]="user.id">{{ user.username }}</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Fecha desde</span>
+        <input name="date_from" type="date" [(ngModel)]="filters.date_from" />
+      </label>
+
+      <label>
+        <span>Fecha hasta</span>
+        <input name="date_to" type="date" [(ngModel)]="filters.date_to" />
+      </label>
+
+      <label>
+        <span>Limite</span>
+        <input name="limit" type="number" min="1" max="500" [(ngModel)]="filters.limit" />
+      </label>
+
+      <button type="submit" [disabled]="filtersLoading">
+        {{ filtersLoading ? 'Filtrando...' : 'Aplicar filtros' }}
+      </button>
+    </form>
+  </section>
+
+  <div class="state-card error" *ngIf="errorMessage">
+    <h2>No se pudo completar la operacion</h2>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div class="state-card" *ngIf="loading">
+    <h2>Cargando auditoria</h2>
+    <p>Estamos consultando los eventos recientes.</p>
+  </div>
+
+  <section class="logs-table-wrap" *ngIf="!loading && logs.length > 0">
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Usuario</th>
+          <th>Evento</th>
+          <th>Entidad</th>
+          <th>Metodo</th>
+          <th>Estado</th>
+          <th>Ruta</th>
+          <th>Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ resolveUsername(log.user_id) }}</td>
+          <td>{{ log.event_type }}</td>
+          <td>{{ log.entity_type }} {{ log.entity_id || '' }}</td>
+          <td>{{ log.method }}</td>
+          <td>{{ log.status_code || '-' }}</td>
+          <td>{{ log.route }}</td>
+          <td>{{ formatDetails(log.details) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</section>

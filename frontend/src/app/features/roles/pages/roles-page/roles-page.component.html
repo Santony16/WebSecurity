@@ -1,0 +1,99 @@
+<section class="roles-page">
+  <header class="page-hero">
+    <div class="page-hero__copy">
+      <h1>Roles y Permisos</h1>
+    </div>
+
+    <div class="page-hero__stats">
+      <article>
+        <span>Roles</span>
+        <strong>{{ roles.length }}</strong>
+      </article>
+      <article>
+        <span>Permisos</span>
+        <strong>{{ permissions.length }}</strong>
+      </article>
+      <article>
+        <span>Asignaciones</span>
+        <strong>{{ totalPermissionAssignments }}</strong>
+      </article>
+    </div>
+  </header>
+
+  <div class="state-card" *ngIf="loading">
+    <h2>Cargando roles</h2>
+    <p>Estamos consultando la configuracion del backend.</p>
+  </div>
+
+  <section class="editor-panel" *ngIf="!loading">
+    <div class="editor-panel__header">
+      <div>
+        <h2>{{ editingRoleId ? 'Editar rol' : 'Nuevo rol' }}</h2>
+        <p class="editor-note">
+          La base de datos solo admite los roles del sistema: {{ systemRoleNames.join(', ') }}.
+        </p>
+      </div>
+      <button type="button" class="ghost-button" (click)="startCreate()">Nuevo formulario</button>
+    </div>
+
+    <form class="editor-form" (ngSubmit)="saveRole()">
+      <label>
+        <span>Nombre</span>
+        <input name="name" [(ngModel)]="form.name" required list="system-role-names" />
+        <small class="field-hint">Usa uno de los nombres permitidos por la base.</small>
+      </label>
+
+      <datalist id="system-role-names">
+        <option *ngFor="let roleName of systemRoleNames" [value]="roleName"></option>
+      </datalist>
+
+      <label>
+        <span>Descripcion</span>
+        <textarea name="description" [(ngModel)]="form.description" rows="4"></textarea>
+      </label>
+
+      <div class="permissions-panel">
+        <h3>Permisos disponibles</h3>
+        <label class="permission-item" *ngFor="let permission of permissions">
+          <input
+            type="checkbox"
+            [checked]="isPermissionSelected(permission.id)"
+            (change)="togglePermission(permission.id, $any($event.target).checked)" />
+          <div>
+            <strong>{{ permission.code }}</strong>
+            <p>{{ permission.name }}</p>
+          </div>
+        </label>
+      </div>
+
+      <div class="feedback-row">
+        <button type="submit" [disabled]="saving">
+          {{ saving ? 'Guardando...' : editingRoleId ? 'Guardar cambios' : 'Crear rol' }}
+        </button>
+        <p class="feedback success" *ngIf="successMessage">{{ successMessage }}</p>
+        <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </div>
+    </form>
+  </section>
+
+  <section class="roles-grid" *ngIf="!loading && roles.length > 0">
+    <article class="role-card" *ngFor="let role of roles">
+      <div class="role-card__header">
+        <div>
+          <h3>{{ role.name }}</h3>
+          <p>{{ role.description || 'Sin descripcion registrada.' }}</p>
+        </div>
+        <span>{{ role.permissions.length }} permisos</span>
+      </div>
+
+      <div class="role-card__permissions">
+        <span *ngFor="let permission of role.permissions">{{ permission.code }}</span>
+      </div>
+
+      <div class="role-card__actions">
+        <button type="button" class="secondary" (click)="startEdit(role)">Editar</button>
+        <button type="button" class="danger" (click)="deleteRole(role)" [disabled]="!canDeleteRole(role)">Eliminar</button>
+      </div>
+    </article>
+  </section>
+</section>

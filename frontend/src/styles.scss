@@ -1,1 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap');
+
+:root {
+	color-scheme: light;
+	--font-sans: 'Sora', sans-serif;
+	--font-display: 'Fraunces', serif;
+	--color-ink: #132238;
+	--color-muted: #5f6c7b;
+	--color-surface: rgba(255, 255, 255, 0.78);
+	--color-surface-strong: #ffffff;
+	--color-line: rgba(19, 34, 56, 0.1);
+	--color-accent: #0d9488;
+	--color-accent-strong: #0f766e;
+	--color-accent-soft: rgba(13, 148, 136, 0.14);
+	--color-warm: #f97316;
+	--color-danger: #dc2626;
+	--shadow-soft: 0 24px 60px rgba(17, 24, 39, 0.12);
+	--shadow-card: 0 20px 50px rgba(15, 23, 42, 0.1);
+	--radius-xl: 32px;
+	--radius-lg: 24px;
+	--radius-md: 18px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: var(--font-sans);
+	color: var(--color-ink);
+	background:
+		radial-gradient(circle at top left, rgba(249, 115, 22, 0.22), transparent 30%),
+		radial-gradient(circle at 85% 15%, rgba(13, 148, 136, 0.2), transparent 28%),
+		linear-gradient(180deg, #f7f4ef 0%, #eef6f5 52%, #f8fafc 100%);
+	background-attachment: fixed;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgba(19, 34, 56, 0.03) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(19, 34, 56, 0.03) 1px, transparent 1px);
+	background-size: 44px 44px;
+	mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
+}
+
+button,
+input,
+textarea,
+select {
+	font: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+	margin: 0;
+}

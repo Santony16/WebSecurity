@@ -1,9 +1,6 @@
+import { SessionUser } from './session-user.model';
+
 export interface LoginResponse {
   message: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    role: string;
-  };
+  user: SessionUser;
 }

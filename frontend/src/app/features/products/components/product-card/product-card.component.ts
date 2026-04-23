@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models/product.model';
 
 @Component({
@@ -11,4 +11,16 @@ import { Product } from '../../models/product.model';
 })
 export class ProductCardComponent {
   @Input({ required: true }) product!: Product;
+  @Input() canManage = false;
+
+  @Output() editProduct = new EventEmitter<Product>();
+  @Output() deleteProduct = new EventEmitter<number>();
+
+  onEdit(): void {
+    this.editProduct.emit(this.product);
+  }
+
+  onDelete(): void {
+    this.deleteProduct.emit(this.product.id);
+  }
 }

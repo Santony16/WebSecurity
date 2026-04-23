@@ -1,18 +1,136 @@
-<h2>Productos</h2>
+<section class="products-page">
+  <header class="products-hero">
+    <div class="products-hero__copy">
+      <h1>Catalogo de Productos</h1>
+    </div>
 
-<div *ngIf="loading">Cargando...</div>
+    <div class="products-hero__stats">
+      <article class="stat-card">
+        <span>Total productos</span>
+        <strong>{{ products.length }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Productos activos</span>
+        <strong>{{ activeProductsCount }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Unidades en stock</span>
+        <strong>{{ totalUnits }}</strong>
+      </article>
+      <article class="stat-card accent">
+        <span>Categorias</span>
+        <strong>{{ categoryCount }}</strong>
+      </article>
+    </div>
+  </header>
 
-<div *ngIf="!loading && errorMessage">
-  {{ errorMessage }}
-</div>
+  <div class="state-panel" *ngIf="loading">
+    <div class="state-panel__pulse"></div>
+    <div>
+      <h2>Cargando catalogo</h2>
+      <p>Estamos consultando los productos disponibles en el backend.</p>
+    </div>
+  </div>
 
-<div *ngIf="!loading && !errorMessage && products.length === 0">
-  No hay productos visibles en Supabase.
-</div>
+  <div class="state-panel error" *ngIf="!loading && errorMessage">
+    <div>
+      <h2>No se pudo cargar la vista</h2>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
 
-<section *ngIf="!loading && !errorMessage && products.length > 0" class="products-grid">
-  <app-product-card
-    *ngFor="let product of products"
-    [product]="product">
-  </app-product-card>
+  <div class="state-panel" *ngIf="!loading && !errorMessage && products.length === 0">
+    <div>
+      <h2>Catalogo vacio</h2>
+      <p>No hay productos visibles en la API.</p>
+    </div>
+  </div>
+
+  <section class="editor-panel" *ngIf="canManageProducts">
+    <div class="editor-panel__header">
+      <div>
+        <h2>{{ editingProductId ? 'Editar producto' : 'Agregar producto' }}</h2>
+      </div>
+      <button type="button" class="ghost-button" (click)="startCreate()">
+        Nuevo formulario
+      </button>
+    </div>
+
+    <form class="editor-form" (ngSubmit)="saveProduct()">
+      <label>
+        <span>Codigo</span>
+        <input
+          name="code"
+          [(ngModel)]="form.code"
+          [disabled]="editingProductId !== null"
+          placeholder="P001"
+          required />
+      </label>
+
+      <label>
+        <span>Nombre</span>
+        <input name="name" [(ngModel)]="form.name" placeholder="Nombre del producto" required />
+      </label>
+
+      <label class="editor-form__wide">
+        <span>Descripcion</span>
+        <textarea
+          name="description"
+          [(ngModel)]="form.description"
+          placeholder="Describe el producto"
+          rows="4"
+          [attr.minlength]="productDescriptionMinLength"
+          [attr.maxlength]="productDescriptionMaxLength"
+          required></textarea>
+        <small class="field-hint">
+          Entre {{ productDescriptionMinLength }} y {{ productDescriptionMaxLength }} caracteres.
+        </small>
+      </label>
+
+      <label>
+        <span>Cantidad</span>
+        <input name="quantity" [(ngModel)]="form.quantity" type="number" min="0" required />
+      </label>
+
+      <label>
+        <span>Precio</span>
+        <input name="price" [(ngModel)]="form.price" type="number" min="0" step="0.01" required />
+      </label>
+
+      <label class="editor-form__wide">
+        <span>Categoria</span>
+        <input name="category" [(ngModel)]="form.category" placeholder="Tecnologia" required />
+      </label>
+
+      <div class="editor-form__actions editor-form__wide">
+        <button type="submit" [disabled]="saving">
+          {{ saving ? 'Guardando...' : editingProductId ? 'Guardar cambios' : 'Crear producto' }}
+        </button>
+        <p class="feedback success" *ngIf="successMessage">{{ successMessage }}</p>
+        <p class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </div>
+    </form>
+  </section>
+
+  <section *ngIf="!loading && !errorMessage && products.length > 0" class="products-collection">
+    <div class="collection-header">
+      <div>
+        <p class="eyebrow">VISTA ACTIVA</p>
+        <h2>Explora el inventario</h2>
+      </div>
+      <p class="collection-note">
+        {{ activeProductsCount }} activos, {{ products.length - activeProductsCount }} inactivos.
+      </p>
+    </div>
+
+    <section class="products-grid">
+      <app-product-card
+        *ngFor="let product of products"
+        [product]="product"
+        [canManage]="canManageProducts"
+        (editProduct)="startEdit($event)"
+        (deleteProduct)="deleteProduct($event)">
+      </app-product-card>
+    </section>
+  </section>
 </section>

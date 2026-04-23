@@ -1,0 +1,28 @@
+<div class="shell" *ngIf="sessionService.currentUser() as user">
+  <header class="topnav">
+    <a class="topnav__brand" routerLink="/products">
+      <span class="topnav__logo">🛍️</span>
+      <strong>Mi Tienda</strong>
+    </a>
+
+    <nav class="topnav__nav">
+      <a
+        *ngFor="let item of navigationItems()"
+        class="topnav__link"
+        [routerLink]="item.path"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        {{ item.label }}
+      </a>
+    </nav>
+
+    <div class="topnav__user">
+      <span class="topnav__role">{{ user.role }}</span>
+      <button type="button" class="topnav__logout" (click)="logout()">Cerrar sesion</button>
+    </div>
+  </header>
+
+  <main class="shell__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

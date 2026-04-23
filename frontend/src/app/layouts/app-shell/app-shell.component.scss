@@ -1,0 +1,144 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+/* -- Top navigation bar -- */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 28px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--color-line);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 12px rgba(17, 24, 39, 0.06);
+}
+
+.topnav__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-ink);
+  flex-shrink: 0;
+}
+
+.topnav__logo {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.topnav__brand strong {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+/* Center nav links, grows to push user section right */
+.topnav__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding-left: 16px;
+}
+
+.topnav__link {
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 160ms ease, color 160ms ease;
+  white-space: nowrap;
+}
+
+.topnav__link:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}
+
+.topnav__link.is-active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}
+
+/* Right side: role badge + username + logout */
+.topnav__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.topnav__role {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.1);
+  color: #c2410c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.topnav__username {
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+}
+
+.topnav__logout {
+  padding: 8px 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-danger);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.topnav__logout:hover {
+  background: rgba(220, 38, 38, 0.06);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+/* -- Main content -- */
+.shell__content {
+  min-width: 0;
+}
+
+/* -- Responsive -- */
+@media (max-width: 768px) {
+  .topnav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .topnav__nav {
+    order: 3;
+    flex: 0 0 100%;
+    padding-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topnav__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topnav__username {
+    display: none;
+  }
+}
